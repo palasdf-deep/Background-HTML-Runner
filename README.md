@@ -30,15 +30,4 @@ Ambiente de desenvolvimento e playground web em tempo real (HTML, CSS e JavaScri
 - `Ctrl + L` (ou `Cmd + L`) → Limpar código do editor
 - `Ctrl + F` (ou `Cmd + F`) → Abrir busca no código
 
----
 
-## 🚀 Como Publicar no GitHub Pages (Passo a Passo)
-
-1. Crie um repositório no seu [GitHub](https://github.com/new) (exemplo: `html-playground`).
-2. Suba o arquivo `index.html` (e este `README.md`) para a raiz do repositório.
-3. No repositório, clique em **Settings** (Configurações).
-4. No menu lateral esquerdo, clique em **Pages**.
-5. Em **Build and deployment** > **Branch**, selecione a branch `main` (ou `master`) e a pasta `/ (root)`.
-6. Clique em **Save**.
-7. Pronto! Em 1 a 2 minutos o GitHub gerará o link público do seu site:
-   `https://seu-usuario.github.io/html-playground/`
