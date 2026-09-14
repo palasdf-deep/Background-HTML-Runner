@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Playground</title>
+  <meta name="description" content="Ambiente de desenvolvimento e preview web em tempo real (HTML, CSS e JavaScript) em arquivo único sem dependências externas." />
+  <meta property="og:title" content="HTML Playground" />
+  <meta property="og:description" content="Ambiente de desenvolvimento e preview web em tempo real (HTML, CSS e JavaScript) em arquivo único sem dependências externas." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0d1117" />
+  <style>
+    /* ==========================================================================
+       HTML PLAYGROUND - DESIGN SYSTEM (DARK & LIGHT MODE)
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Dark Theme Defaults */
+      --bg-canvas: #090c10;
+      --bg-surface: #0d1117;
+      --bg-panel: #161b22;
+      --bg-subtle: #21262d;
+      --bg-hover: #30363d;
+      --border-subtle: #30363d;
+      --border-strong: #484f58;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      
+      --accent-green: #238636;
+      --accent-green-hover: #2ea043;
+      --accent-blue: #2f81f7;
+      --accent-blue-subtle: rgba(47, 129, 247, 0.15);
+      --accent-red: #da3633;
+      --accent-yellow: #d29922;
+
+      --editor-bg: #090c10;
+      --editor-gutter: #0d1117;
+      --editor-line-num: #484f58;
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+      --topbar-height: 48px;
+      --statusbar-height: 26px;
+    }
+
+    /* Light Theme Variation */
+    body.theme-light {
+      --bg-canvas: #f6f8fa;
+      --bg-surface: #ffffff;
+      --bg-panel: #f3f4f6;
+      --bg-subtle: #eaeef2;
+      --bg-hover: #d0d7de;
+      --border-subtle: #d0d7de;
+      --border-strong: #afb8c1;
+      --text-main: #1f2328;
+      --text-muted: #57606a;
+      --text-dim: #8c959f;
+
+      --accent-green: #1a7f37;
+      --accent-green-hover: #2da44e;
+      --accent-blue: #0969da;
+      --accent-blue-subtle: rgba(9, 105, 218, 0.12);
+      --accent-red: #cf222e;
+      --accent-yellow: #9a6700;
+
+      --editor-bg: #ffffff;
+      --editor-gutter: #f6f8fa;
+      --editor-line-num: #afb8c1;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* APP ROOT CONTAINER */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== */
+    .topbar {
+      height: var(--topbar-height);
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #1f6feb, #8957e5);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    /* BUTTONS & TOOLBAR */
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+      background: transparent;
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-green);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-green-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-subtle);
+      border-color: var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn-icon-only {
+      padding: 5px 7px;
+    }
+
+    .btn-danger {
+      background-color: transparent;
+      color: var(--text-muted);
+    }
+    .btn-danger:hover {
+      background-color: rgba(218, 54, 51, 0.15);
+      border-color: var(--accent-red);
+      color: #ff7b72;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 6px;
+      border-radius: var(--radius-sm);
+    }
+    .checkbox-label:hover {
+      color: var(--text-main);
+      background-color: var(--bg-subtle);
+    }
+    .checkbox-label input {
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+    }
+
+    /* STATUS INDICATOR */
+    .status-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent-green);
+    }
+    .status-tag.error .status-dot {
+      background-color: var(--accent-red);
+    }
+
+    /* MOBILE NAV SWITCHER */
+    .mobile-tab-switcher {
+      display: none;
+      background-color: var(--bg-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 4px;
+      gap: 4px;
+    }
+    .mobile-tab-btn {
+      flex: 1;
+      padding: 6px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .mobile-tab-btn.active {
+      background-color: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       MAIN WORKSPACE (SPLIT PANE: EDITOR & PREVIEW)
+       ========================================================================== */
+    .workspace {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      background-color: var(--bg-canvas);
+      position: relative;
+    }
+
+    .pane-editor {
+      width: 50%;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--editor-bg);
+      border-right: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .pane-preview-group {
+      flex: 1;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-canvas);
+      position: relative;
+    }
+
+    /* SPLIT RESIZE DIVIDER */
+    .split-divider {
+      width: 6px;
+      cursor: col-resize;
+      background-color: transparent;
+      position: relative;
+      z-index: 10;
+      transition: background-color 0.15s;
+    }
+    .split-divider:hover, .split-divider.dragging {
+      background-color: var(--accent-blue);
+    }
+
+    /* PANE HEADERS & TABS */
+    .pane-header {
+      height: 36px;
+      background-color: var(--bg-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .mode-tab-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 100%;
+    }
+
+    .tab-btn {
+      height: 28px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background-color: var(--bg-subtle);
+    }
+    .tab-btn.active {
+      color: var(--text-main);
+      background-color: var(--bg-subtle);
+      border-color: var(--border-subtle);
+      font-weight: 600;
+    }
+
+    .pane-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* SEARCH BAR (INTEGRATED IN EDITOR) */
+    .search-bar {
+      display: none;
+      background-color: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 6px 12px;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-bar.show {
+      display: flex;
+    }
+    .search-input {
+      flex: 1;
+      max-width: 260px;
+      padding: 4px 8px;
+      background-color: var(--editor-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+    .search-counter {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* EDITOR CORE (GUTTER + TEXTAREA) */
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      position: relative;
+      background-color: var(--editor-bg);
+    }
+
+    .editor-gutter {
+      width: 44px;
+      padding: 10px 6px 10px 0;
+      background-color: var(--editor-gutter);
+      border-right: 1px solid var(--border-subtle);
+      color: var(--editor-line-num);
+      text-align: right;
+      user-select: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 20px;
+      overflow: hidden;
+    }
+
+    .editor-textarea {
+      flex: 1;
+      padding: 10px 12px;
+      background: transparent;
+      color: var(--text-main);
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 20px;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-strong) transparent;
+    }
+    .editor-textarea.wrap-enabled {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* PREVIEW CONTAINER */
+    .preview-viewport-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #050608;
+      position: relative;
+      overflow: auto;
+      padding: 0;
+    }
+    body.theme-light .preview-viewport-container {
+      background-color: #e5e7eb;
+    }
+
+    .preview-wrapper {
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      transition: width 0.2s ease, max-width 0.2s ease;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-wrapper.tablet {
+      width: 768px;
+      height: 96%;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+    }
+    .preview-wrapper.mobile {
+      width: 375px;
+      height: 96%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+    }
+
+    .preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #ffffff;
+    }
+
+    /* ==========================================================================
+       INTEGRATED CONSOLE DRAWER
+       ========================================================================== */
+    .console-drawer {
+      height: 150px;
+      min-height: 36px;
+      max-height: 50%;
+      background-color: var(--editor-bg);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .console-drawer.collapsed {
+      height: 36px !important;
+    }
+
+    .console-bar {
+      height: 36px;
+      background-color: var(--bg-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .console-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .console-entries {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      scrollbar-width: thin;
+    }
+
+    .console-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+    }
+    .console-row.log-info { color: #58a6ff; }
+    .console-row.log-warn { color: #d29922; }
+    .console-row.log-error { color: #f85149; }
+    .console-row.log-log { color: var(--text-main); }
+
+    .console-time {
+      color: var(--text-dim);
+      font-size: 10.5px;
+      user-select: none;
+      min-width: 58px;
+    }
+    .console-tag {
+      font-size: 10px;
+      font-weight: bold;
+      padding: 1px 4px;
+      border-radius: 3px;
+      min-width: 48px;
+      text-align: center;
+      user-select: none;
+    }
+    .console-tag.info { background: rgba(88, 166, 255, 0.15); color: #58a6ff; }
+    .console-tag.warn { background: rgba(210, 153, 34, 0.15); color: #d29922; }
+    .console-tag.error { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+    .console-tag.log { background: var(--bg-subtle); color: var(--text-muted); }
+
+    .console-text {
+      flex: 1;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+
+    /* ==========================================================================
+       STATUS BAR (FOOTER)
+       ========================================================================== */
+    .statusbar {
+      height: var(--statusbar-height);
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 11px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .statusbar-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .kbd-chip {
+      padding: 1px 4px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* MODAL (PROJECTS & CONFIG) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 12px 16px;
+      background-color: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .modal-body {
+      padding: 16px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    .project-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 8px;
+      background-color: var(--bg-surface);
+      cursor: pointer;
+    }
+    .project-item:hover {
+      border-color: var(--accent-blue);
+    }
+    .project-item-title {
+      font-weight: 600;
+      color: var(--text-main);
+      font-size: 12.5px;
+    }
+    .project-item-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* TOAST ALERT */
+    .toast {
+      position: fixed;
+      bottom: 34px;
+      right: 18px;
+      padding: 8px 14px;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* SVG ICONS */
+    .icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      vertical-align: middle;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* FULLSCREEN TOGGLES */
+    .pane-editor.collapsed { display: none !important; }
+    .pane-editor.fullwidth { width: 100% !important; border-right: none; }
+    .pane-preview-group.fullwidth { width: 100% !important; }
+
+    /* RESPONSIVE STYLES FOR MOBILE */
+    @media (max-width: 768px) {
+      .topbar {
+        padding: 6px 10px;
+        flex-wrap: wrap;
+        height: auto;
+      }
+      .brand-title { display: none; }
+      .mobile-tab-switcher { display: flex; }
+      
+      .workspace {
+        flex-direction: column;
+      }
+      .split-divider { display: none; }
+      .pane-editor, .pane-preview-group {
+        width: 100% !important;
+        height: 100%;
+        border-right: none;
+      }
+      
+      /* Toggle visibility on mobile based on active mobile tab */
+      .app-container[data-mobile-view="editor"] .pane-editor { display: flex !important; }
+      .app-container[data-mobile-view="editor"] .pane-preview-group { display: none !important; }
+      .app-container[data-mobile-view="editor"] .console-drawer { display: none !important; }
+
+      .app-container[data-mobile-view="preview"] .pane-editor { display: none !important; }
+      .app-container[data-mobile-view="preview"] .pane-preview-group { display: flex !important; }
+      .app-container[data-mobile-view="preview"] .console-drawer { display: none !important; }
+
+      .app-container[data-mobile-view="console"] .pane-editor { display: none !important; }
+      .app-container[data-mobile-view="console"] .pane-preview-group { display: none !important; }
+      .app-container[data-mobile-view="console"] .console-drawer { display: flex !important; height: 100% !important; max-height: 100% !important; }
+
+      .statusbar-section:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="app-container" data-mobile-view="editor">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="topbar">
+      <!-- BRAND -->
+      <div class="brand-section">
+        <div class="brand-badge">HP</div>
+        <div class="brand-title">HTML Playground</div>
+      </div>
+
+      <!-- MAIN ACTIONS -->
+      <div class="toolbar-group">
+        <!-- RUN BUTTON -->
+        <button id="btn-run" class="btn btn-primary" title="Executar código (Ctrl + Enter)">
+          <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Executar
+        </button>
+
+        <!-- REFRESH PREVIEW -->
+        <button id="btn-refresh" class="btn btn-secondary btn-icon-only" title="Atualizar preview">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+        </button>
+
+        <!-- LIVE PREVIEW TOGGLE -->
+        <label class="checkbox-label" title="Atualiza o preview automaticamente com debounce após você digitar">
+          <input type="checkbox" id="chk-live-preview" checked />
+          <span>Executar automaticamente</span>
+        </label>
+
+        <!-- SAVE BUTTON -->
+        <button id="btn-save" class="btn btn-secondary" title="Salvar localmente (Ctrl + S)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Salvar
+        </button>
+
+        <!-- NEW PROJECT -->
+        <button id="btn-new-project" class="btn btn-secondary" title="Criar novo projeto">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Novo
+        </button>
+
+        <!-- MY PROJECTS -->
+        <button id="btn-open-projects" class="btn btn-secondary" title="Meus Projetos Recentes">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Projetos
+        </button>
+
+        <!-- IMPORT FILE -->
+        <button id="btn-import" class="btn btn-secondary" title="Importar arquivo .html, .htm ou .txt">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          Importar
+        </button>
+        <input type="file" id="file-input" accept=".html,.htm,.txt" style="display: none;" />
+
+        <!-- EXPORT FILE -->
+        <button id="btn-export" class="btn btn-secondary" title="Exportar projeto como index.html">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Exportar
+        </button>
+
+        <!-- THEME TOGGLE (DARK/LIGHT) -->
+        <button id="btn-toggle-theme" class="btn btn-secondary btn-icon-only" title="Alternar Dark/Light mode">
+          <svg class="icon" id="theme-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+
+        <!-- STATUS TAG -->
+        <div class="status-tag" id="status-tag">
+          <span class="status-dot"></span>
+          <span id="status-tag-text">Pronto</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MOBILE TAB SWITCHER (VISIBLE ON PHONES) -->
+    <nav class="mobile-tab-switcher">
+      <button class="mobile-tab-btn active" data-view="editor">Editor</button>
+      <button class="mobile-tab-btn" data-view="preview">Preview</button>
+      <button class="mobile-tab-btn" data-view="console">Console</button>
+    </nav>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace" id="workspace">
+      
+      <!-- PANE 1: CODE EDITOR -->
+      <section class="pane-editor" id="pane-editor">
+        <!-- HEADER WITH FILE MODES & ACTIONS -->
+        <div class="pane-header">
+          <div class="mode-tab-group" id="mode-tab-group">
+            <!-- Mode 1: Full HTML -->
+            <button class="tab-btn active" data-mode="full" id="tab-full-html" title="Escreva o documento HTML completo">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              <span>index.html (Completo)</span>
+            </button>
+            <!-- Mode 2: Separated Files -->
+            <button class="tab-btn" data-mode="sep-html" id="tab-sep-html" title="Apenas o corpo HTML">
+              <span>HTML</span>
+            </button>
+            <button class="tab-btn" data-mode="sep-css" id="tab-sep-css" title="Apenas o CSS (style.css)">
+              <span>CSS</span>
+            </button>
+            <button class="tab-btn" data-mode="sep-js" id="tab-sep-js" title="Apenas o JavaScript (script.js)">
+              <span>JS</span>
+            </button>
+          </div>
+
+          <div class="pane-actions">
+            <!-- SEARCH TOGGLE -->
+            <button id="btn-toggle-search" class="btn btn-secondary btn-icon-only" title="Buscar no código (Ctrl + F)">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <!-- FORMAT CODE -->
+            <button id="btn-format" class="btn btn-secondary btn-icon-only" title="Formatar código">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            </button>
+            <!-- COPY CODE -->
+            <button id="btn-copy" class="btn btn-secondary btn-icon-only" title="Copiar código">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <!-- WRAP LINES TOGGLE -->
+            <button id="btn-toggle-wrap" class="btn btn-secondary btn-icon-only" title="Quebra de linha automática">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="17 10 21 14 17 18"></polyline><path d="M3 6h18M3 12h15a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H3"></path></svg>
+            </button>
+            <!-- CLEAR CODE -->
+            <button id="btn-clear" class="btn btn-danger btn-icon-only" title="Limpar editor (Ctrl + L)">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+            <!-- EXPAND / FULLSCREEN EDITOR -->
+            <button id="btn-expand-editor" class="btn btn-secondary btn-icon-only" title="Expandir editor">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- SEARCH BAR (COLLAPSIBLE) -->
+        <div class="search-bar" id="search-bar">
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar texto no editor..." />
+          <button id="btn-find-prev" class="btn btn-secondary btn-icon-only" title="Anterior">▲</button>
+          <button id="btn-find-next" class="btn btn-secondary btn-icon-only" title="Próximo">▼</button>
+          <span class="search-counter" id="search-counter">0/0</span>
+          <button id="btn-close-search" class="btn btn-secondary btn-icon-only" style="margin-left: auto;">✕</button>
+        </div>
+
+        <!-- EDITOR GUTTER & TEXTAREA -->
+        <div class="editor-wrapper">
+          <div class="editor-gutter" id="editor-gutter">1</div>
+          <textarea id="editor-textarea" class="editor-textarea" spellcheck="false" placeholder="Escreva seu código aqui..."></textarea>
+        </div>
+      </section>
+
+      <!-- SPLIT DRAGGER (RESIZABLE SPLIT PANE) -->
+      <div class="split-divider" id="split-divider" title="Arraste para redimensionar"></div>
+
+      <!-- PANE 2: PREVIEW GROUP -->
+      <section class="pane-preview-group" id="pane-preview-group">
+        <!-- PREVIEW CONTROLS HEADER -->
+        <div class="pane-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            <span style="font-weight: 600; color: var(--text-main);">Preview</span>
+          </div>
+
+          <div class="pane-actions">
+            <!-- SCREEN SIZE CONTROLS -->
+            <button class="btn btn-secondary btn-icon-only active" id="btn-size-desktop" title="Desktop (100%)">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </button>
+            <button class="btn btn-secondary btn-icon-only" id="btn-size-tablet" title="Tablet (768px)">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            </button>
+            <button class="btn btn-secondary btn-icon-only" id="btn-size-mobile" title="Mobile (375px)">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            </button>
+
+            <span style="width: 1px; height: 16px; background: var(--border-subtle); margin: 0 4px;"></span>
+
+            <!-- OPEN IN NEW TAB -->
+            <button id="btn-open-new-tab" class="btn btn-secondary" title="Abrir preview em uma nova aba independente">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>Abrir Preview</span>
+            </button>
+
+            <!-- FULLSCREEN PREVIEW -->
+            <button id="btn-expand-preview" class="btn btn-secondary btn-icon-only" title="Tela cheia do preview">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- PREVIEW VIEWPORT AREA -->
+        <div class="preview-viewport-container">
+          <div class="preview-wrapper" id="preview-wrapper">
+            <iframe
+              id="preview-frame"
+              class="preview-frame"
+              sandbox="allow-scripts allow-forms allow-modals allow-same-origin allow-popups"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture; camera; microphone"
+              title="Preview Renderizado"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- PANE 3: CONSOLE DRAWER (ATTACHED TO BOTTOM) -->
+    <div class="console-drawer" id="console-drawer">
+      <div class="console-bar" id="console-bar-toggle">
+        <div class="console-bar-left">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          <span>Console</span>
+          <span id="console-count" style="color: var(--text-dim); font-size: 11px;">(0)</span>
+        </div>
+        <div style="display: flex; gap: 4px;" onclick="event.stopPropagation();">
+          <button id="btn-clear-console" class="btn btn-secondary" style="padding: 2px 6px; font-size: 11px;">
+            Limpar Console
+          </button>
+          <button id="btn-toggle-console-drawer" class="btn btn-secondary btn-icon-only" style="padding: 2px 6px;">
+            <svg class="icon" id="console-toggle-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+        </div>
+      </div>
+      <div class="console-entries" id="console-entries"></div>
+    </div>
+
+    <!-- STATUS BAR FOOTER -->
+    <footer class="statusbar">
+      <div class="statusbar-section">
+        <span id="stat-lines">Linhas: 1</span>
+        <span id="stat-chars">Caracteres: 0</span>
+        <span id="stat-pos">Ln 1, Col 1</span>
+        <span id="stat-save-status">✓ Salvo</span>
+      </div>
+      <div class="statusbar-section">
+        <span>Atalhos: <span class="kbd-chip">Ctrl+Enter</span> Executar</span>
+        <span><span class="kbd-chip">Ctrl+S</span> Salvar</span>
+        <span><span class="kbd-chip">Ctrl+L</span> Limpar</span>
+        <span>Isolamento: <strong>sandbox iframe</strong></span>
+      </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">Mensagem</div>
+
+    <!-- RECENT PROJECTS MODAL -->
+    <div class="modal-overlay" id="modal-projects">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span>Meus Projetos Recentes</span>
+          <button class="btn btn-secondary btn-icon-only" id="btn-close-modal">✕</button>
+        </div>
+        <div class="modal-body" id="modal-projects-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT STANDALONE COMPLETO -->
+  <script>
+    (function () {
+      "use strict";
+
+      // ======================================================================
+      // INITIAL STARTER TEMPLATE (REQUISITO 17)
+      // ======================================================================
+      const DEFAULT_STARTER_HTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meu primeiro site</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #238636;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2ea043;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Olá, mundo!</h1>
+
+    <p>Este site está sendo executado no HTML Playground.</p>
+
+    <button id="btn">
+        Clique aqui
+    </button>
+
+    <script>
+        document.getElementById("btn").addEventListener("click", () => {
+            alert("JavaScript funcionando!");
+        });
+
+        console.log("Página carregada com sucesso.");
+    <\/script>
+
+</body>
+</html>`;
+
+      const DEFAULT_SEP_HTML = `<h1>Minha página</h1>
+<p>Criado com abas separadas de HTML, CSS e JavaScript.</p>
+<button id="btn">Clique aqui</button>`;
+
+      const DEFAULT_SEP_CSS = `body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2f81f7;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}`;
+
+      const DEFAULT_SEP_JS = `document.getElementById("btn").addEventListener("click", () => {
+    alert("Olá! JavaScript em arquivo separado executado com sucesso!");
+    console.log("Botão clicado!");
+});
+
+console.log("Projeto separado inicializado.");`;
+
+      // ======================================================================
+      // APPLICATION STATE
+      // ======================================================================
+      const state = {
+        mode: "full", // 'full' | 'sep-html' | 'sep-css' | 'sep-js'
+        fullHtml: DEFAULT_STARTER_HTML,
+        sepHtml: DEFAULT_SEP_HTML,
+        sepCss: DEFAULT_SEP_CSS,
+        sepJs: DEFAULT_SEP_JS,
+        currentProjectId: "default_project",
+        currentProjectName: "Meu primeiro site",
+        livePreview: true,
+        wordWrap: false,
+        theme: "dark", // 'dark' | 'light'
+        deviceView: "desktop", // 'desktop' | 'tablet' | 'mobile'
+        isEditorExpanded: false,
+        isPreviewExpanded: false,
+        isConsoleCollapsed: false,
+        logCount: 0
+      };
+
+      // ======================================================================
+      // DOM REFERENCES
+      // ======================================================================
+      const appContainer = document.getElementById("app-container");
+      const editorTextarea = document.getElementById("editor-textarea");
+      const editorGutter = document.getElementById("editor-gutter");
+      const previewFrame = document.getElementById("preview-frame");
+      const previewWrapper = document.getElementById("preview-wrapper");
+      const statusTag = document.getElementById("status-tag");
+      const statusTagText = document.getElementById("status-tag-text");
+      const statLines = document.getElementById("stat-lines");
+      const statChars = document.getElementById("stat-chars");
+      const statPos = document.getElementById("stat-pos");
+      const statSaveStatus = document.getElementById("stat-save-status");
+      const toastEl = document.getElementById("toast");
+
+      const btnRun = document.getElementById("btn-run");
+      const btnRefresh = document.getElementById("btn-refresh");
+      const btnSave = document.getElementById("btn-save");
+      const btnNewProject = document.getElementById("btn-new-project");
+      const btnOpenProjects = document.getElementById("btn-open-projects");
+      const btnImport = document.getElementById("btn-import");
+      const fileInput = document.getElementById("file-input");
+      const btnExport = document.getElementById("btn-export");
+      const btnToggleTheme = document.getElementById("btn-toggle-theme");
+      const chkLivePreview = document.getElementById("chk-live-preview");
+
+      const tabFullHtml = document.getElementById("tab-full-html");
+      const tabSepHtml = document.getElementById("tab-sep-html");
+      const tabSepCss = document.getElementById("tab-sep-css");
+      const tabSepJs = document.getElementById("tab-sep-js");
+
+      const btnToggleSearch = document.getElementById("btn-toggle-search");
+      const searchBar = document.getElementById("search-bar");
+      const searchInput = document.getElementById("search-input");
+      const btnFindPrev = document.getElementById("btn-find-prev");
+      const btnFindNext = document.getElementById("btn-find-next");
+      const searchCounter = document.getElementById("search-counter");
+      const btnCloseSearch = document.getElementById("btn-close-search");
+
+      const btnFormat = document.getElementById("btn-format");
+      const btnCopy = document.getElementById("btn-copy");
+      const btnToggleWrap = document.getElementById("btn-toggle-wrap");
+      const btnClear = document.getElementById("btn-clear");
+      const btnExpandEditor = document.getElementById("btn-expand-editor");
+      const btnExpandPreview = document.getElementById("btn-expand-preview");
+      const btnOpenNewTab = document.getElementById("btn-open-new-tab");
+
+      const btnSizeDesktop = document.getElementById("btn-size-desktop");
+      const btnSizeTablet = document.getElementById("btn-size-tablet");
+      const btnSizeMobile = document.getElementById("btn-size-mobile");
+
+      const splitDivider = document.getElementById("split-divider");
+      const paneEditor = document.getElementById("pane-editor");
+      const panePreviewGroup = document.getElementById("pane-preview-group");
+      const workspace = document.getElementById("workspace");
+
+      const consoleDrawer = document.getElementById("console-drawer");
+      const consoleEntries = document.getElementById("console-entries");
+      const consoleCount = document.getElementById("console-count");
+      const btnClearConsole = document.getElementById("btn-clear-console");
+      const btnToggleConsoleDrawer = document.getElementById("btn-toggle-console-drawer");
+      const consoleToggleIcon = document.getElementById("console-toggle-icon");
+      const consoleBarToggle = document.getElementById("console-bar-toggle");
+
+      const modalProjects = document.getElementById("modal-projects");
+      const modalProjectsList = document.getElementById("modal-projects-list");
+      const btnCloseModal = document.getElementById("btn-close-modal");
+
+      const mobileTabButtons = document.querySelectorAll(".mobile-tab-btn");
+
+      // Debounce timer for Live Preview
+      let livePreviewTimeout = null;
+
+      // ======================================================================
+      // TOAST NOTIFICATION
+      // ======================================================================
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        setTimeout(() => toastEl.classList.remove("show"), 2500);
+      }
+
+      // ======================================================================
+      // STATUS UPDATE
+      // ======================================================================
+      function setStatus(isError, text) {
+        if (isError) {
+          statusTag.classList.add("error");
+        } else {
+          statusTag.classList.remove("error");
+        }
+        statusTagText.textContent = text;
+      }
+
+      // ======================================================================
+      // CONSOLE MANAGEMENT
+      // ======================================================================
+      function appendConsole(level, text) {
+        state.logCount++;
+        consoleCount.textContent = "(" + state.logCount + ")";
+
+        const now = new Date();
+        const timeStr = "[" +
+          String(now.getHours()).padStart(2, "0") + ":" +
+          String(now.getMinutes()).padStart(2, "0") + ":" +
+          String(now.getSeconds()).padStart(2, "0") + "]";
+
+        const row = document.createElement("div");
+        row.className = "console-row log-" + level;
+
+        const timeSpan = document.createElement("span");
+        timeSpan.className = "console-time";
+        timeSpan.textContent = timeStr;
+
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "console-tag " + level;
+        tagSpan.textContent = level.toUpperCase();
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "console-text";
+        textSpan.textContent = typeof text === "object" ? JSON.stringify(text, null, 2) : String(text);
+
+        row.appendChild(timeSpan);
+        row.appendChild(tagSpan);
+        row.appendChild(textSpan);
+        consoleEntries.appendChild(row);
+        consoleEntries.scrollTop = consoleEntries.scrollHeight;
+
+        if (level === "error") {
+          setStatus(true, "Erro no código");
+        }
+      }
+
+      function clearConsole() {
+        consoleEntries.innerHTML = "";
+        state.logCount = 0;
+        consoleCount.textContent = "(0)";
+      }
+
+      // ======================================================================
+      // EDITOR GUTTER & STATS
+      // ======================================================================
+      function updateStatsAndGutter() {
+        const text = editorTextarea.value;
+        const lines = text.split("\n").length;
+        const chars = text.length;
+
+        statLines.textContent = "Linhas: " + lines;
+        statChars.textContent = "Caracteres: " + chars;
+
+        const selStart = editorTextarea.selectionStart || 0;
+        const beforeCursor = text.substring(0, selStart);
+        const curLine = beforeCursor.split("\n").length;
+        const curCol = selStart - beforeCursor.lastIndexOf("\n");
+        statPos.textContent = "Ln " + curLine + ", Col " + curCol;
+
+        // Populate gutter lines
+        let gutterStr = "";
+        for (let i = 1; i <= lines; i++) {
+          gutterStr += i + "<br>";
+        }
+        editorGutter.innerHTML = gutterStr;
+      }
+
+      editorTextarea.addEventListener("scroll", () => {
+        editorGutter.scrollTop = editorTextarea.scrollTop;
+      });
+
+      editorTextarea.addEventListener("input", () => {
+        // Sync to active state
+        saveCurrentEditorContentToState();
+        updateStatsAndGutter();
+        triggerLivePreview();
+      });
+
+      editorTextarea.addEventListener("click", updateStatsAndGutter);
+      editorTextarea.addEventListener("keyup", updateStatsAndGutter);
+
+      // Handle Tab indentation (2 spaces)
+      editorTextarea.addEventListener("keydown", (e) => {
+        if (e.key === "Tab") {
+          e.preventDefault();
+          const start = editorTextarea.selectionStart;
+          const end = editorTextarea.selectionEnd;
+          editorTextarea.value = editorTextarea.value.substring(0, start) + "  " + editorTextarea.value.substring(end);
+          editorTextarea.selectionStart = editorTextarea.selectionEnd = start + 2;
+          saveCurrentEditorContentToState();
+          updateStatsAndGutter();
+          triggerLivePreview();
+        }
+      });
+
+      function saveCurrentEditorContentToState() {
+        const val = editorTextarea.value;
+        if (state.mode === "full") state.fullHtml = val;
+        else if (state.mode === "sep-html") state.sepHtml = val;
+        else if (state.mode === "sep-css") state.sepCss = val;
+        else if (state.mode === "sep-js") state.sepJs = val;
+      }
+
+      function loadStateContentToEditor() {
+        if (state.mode === "full") editorTextarea.value = state.fullHtml;
+        else if (state.mode === "sep-html") editorTextarea.value = state.sepHtml;
+        else if (state.mode === "sep-css") editorTextarea.value = state.sepCss;
+        else if (state.mode === "sep-js") editorTextarea.value = state.sepJs;
+
+        updateStatsAndGutter();
+      }
+
+      // ======================================================================
+      // MODE TABS SWITCHING
+      // ======================================================================
+      const modeTabs = [tabFullHtml, tabSepHtml, tabSepCss, tabSepJs];
+
+      modeTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          saveCurrentEditorContentToState();
+          modeTabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          state.mode = tab.dataset.mode;
+          loadStateContentToEditor();
+        });
+      });
+
+      // ======================================================================
+      // COMPILING FINAL HTML DOCUMENT
+      // ======================================================================
+      function getCombinedHtml() {
+        if (state.mode === "full") {
+          return state.fullHtml;
+        }
+
+        // Combine separate files
+        return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+${state.sepCss}
+  </style>
+</head>
+<body>
+${state.sepHtml}
+  <script>
+${state.sepJs}
+  <\/script>
+</body>
+</html>`;
+      }
+
+      // ======================================================================
+      // ISOLATED IFRAME EXECUTION WITH CONSOLE BRIDGE (REQUISITOS 4, 5, 6, 8, 9)
+      // ======================================================================
+      function buildBridgeScript() {
+        return `
+<script>
+(function() {
+  function postToHost(level, message) {
+    try {
+      window.parent.postMessage({
+        source: 'html-playground-bridge',
+        level: level,
+        message: message
+      }, '*');
+    } catch(e) {}
+  }
+
+  // Intercept standard console methods
+  const origLog = console.log;
+  const origInfo = console.info;
+  const origWarn = console.warn;
+  const origError = console.error;
+
+  console.log = function(...args) {
+    postToHost('log', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+    origLog.apply(console, args);
+  };
+  console.info = function(...args) {
+    postToHost('info', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+    origInfo.apply(console, args);
+  };
+  console.warn = function(...args) {
+    postToHost('warn', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+    origWarn.apply(console, args);
+  };
+  console.error = function(...args) {
+    postToHost('error', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+    origError.apply(console, args);
+  };
+
+  // Capture global uncaught runtime errors without breaking the host
+  window.onerror = function(msg, url, line, col, error) {
+    const errText = (error && error.message) ? error.message : msg;
+    postToHost('error', errText + (line ? ' (Linha ' + line + ')' : ''));
+    return false;
+  };
+
+  // Capture unhandled promise rejections
+  window.onunhandledrejection = function(event) {
+    const reason = event.reason;
+    const msg = reason ? (reason.message || String(reason)) : 'Erro em Promise não tratada';
+    postToHost('error', 'Unhandled Promise: ' + msg);
+  };
+})();
+<\/script>
+`;
+      }
+
+      function runCode(isAuto = false) {
+        saveCurrentEditorContentToState();
+        const rawCode = getCombinedHtml();
+
+        // 7. Clear prior errors / logs on manual execute
+        if (!isAuto) {
+          clearConsole();
+        }
+
+        setStatus(false, "Executando...");
+
+        // Inject bridge script into the document
+        const bridge = buildBridgeScript();
+        let finalDoc = rawCode;
+
+        if (finalDoc.includes("<head>")) {
+          finalDoc = finalDoc.replace("<head>", "<head>" + bridge);
+        } else if (finalDoc.includes("<body>")) {
+          finalDoc = finalDoc.replace("<body>", "<body>" + bridge);
+        } else {
+          finalDoc = bridge + finalDoc;
+        }
+
+        // Render in isolated sandbox iframe
+        previewFrame.srcdoc = finalDoc;
+
+        setTimeout(() => {
+          setStatus(false, "Executado");
+          if (!isAuto) showToast("✓ Executado com sucesso");
+        }, 150);
+      }
+
+      // ======================================================================
+      // LIVE PREVIEW DEBOUNCE (REQUISITO 7)
+      // ======================================================================
+      function triggerLivePreview() {
+        if (!state.livePreview) return;
+        if (livePreviewTimeout) clearTimeout(livePreviewTimeout);
+        livePreviewTimeout = setTimeout(() => {
+          runCode(true);
+        }, 400); // 400ms debounce
+      }
+
+      chkLivePreview.addEventListener("change", (e) => {
+        state.livePreview = e.target.checked;
+        showToast(state.livePreview ? "Execução automática ativada" : "Execução automática desativada");
+      });
+
+      btnRun.addEventListener("click", () => runCode(false));
+      btnRefresh.addEventListener("click", () => runCode(false));
+
+      // Receive PostMessage from Iframe Console Bridge
+      window.addEventListener("message", (e) => {
+        if (!e.data || e.data.source !== "html-playground-bridge") return;
+        appendConsole(e.data.level, e.data.message);
+      });
+
+      // ======================================================================
+      // OPEN IN NEW TAB (REQUISITO 11)
+      // ======================================================================
+      btnOpenNewTab.addEventListener("click", () => {
+        const rawHtml = getCombinedHtml();
+        const blob = new Blob([rawHtml], { type: "text/html" });
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, "_blank");
+        showToast("↗ Preview aberto em nova aba");
+      });
+
+      // ======================================================================
+      // SCREEN SIZE PRESETS (REQUISITO 10)
+      // ======================================================================
+      function setDeviceSize(size) {
+        state.deviceView = size;
+        previewWrapper.classList.remove("tablet", "mobile");
+        btnSizeDesktop.classList.remove("active");
+        btnSizeTablet.classList.remove("active");
+        btnSizeMobile.classList.remove("active");
+
+        if (size === "desktop") {
+          btnSizeDesktop.classList.add("active");
+        } else if (size === "tablet") {
+          previewWrapper.classList.add("tablet");
+          btnSizeTablet.classList.add("active");
+        } else if (size === "mobile") {
+          previewWrapper.classList.add("mobile");
+          btnSizeMobile.classList.add("active");
+        }
+      }
+
+      btnSizeDesktop.addEventListener("click", () => setDeviceSize("desktop"));
+      btnSizeTablet.addEventListener("click", () => setDeviceSize("tablet"));
+      btnSizeMobile.addEventListener("click", () => setDeviceSize("mobile"));
+
+      // ======================================================================
+      // EXPAND / FULLSCREEN TOGGLES
+      // ======================================================================
+      btnExpandEditor.addEventListener("click", () => {
+        state.isEditorExpanded = !state.isEditorExpanded;
+        if (state.isEditorExpanded) {
+          panePreviewGroup.classList.add("collapsed");
+          paneEditor.classList.add("fullwidth");
+          btnExpandEditor.classList.add("active");
+        } else {
+          panePreviewGroup.classList.remove("collapsed");
+          paneEditor.classList.remove("fullwidth");
+          btnExpandEditor.classList.remove("active");
+        }
+      });
+
+      btnExpandPreview.addEventListener("click", () => {
+        state.isPreviewExpanded = !state.isPreviewExpanded;
+        if (state.isPreviewExpanded) {
+          paneEditor.classList.add("collapsed");
+          panePreviewGroup.classList.add("fullwidth");
+          btnExpandPreview.classList.add("active");
+        } else {
+          paneEditor.classList.remove("collapsed");
+          panePreviewGroup.classList.remove("fullwidth");
+          btnExpandPreview.classList.remove("active");
+        }
+      });
+
+      // ======================================================================
+      // CONSOLE DRAWER COLLAPSE
+      // ======================================================================
+      function toggleConsoleDrawer() {
+        state.isConsoleCollapsed = !state.isConsoleCollapsed;
+        if (state.isConsoleCollapsed) {
+          consoleDrawer.classList.add("collapsed");
+          consoleToggleIcon.innerHTML = '<polyline points="18 15 12 9 6 15"></polyline>';
+        } else {
+          consoleDrawer.classList.remove("collapsed");
+          consoleToggleIcon.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+        }
+      }
+
+      consoleBarToggle.addEventListener("click", toggleConsoleDrawer);
+      btnToggleConsoleDrawer.addEventListener("click", toggleConsoleDrawer);
+      btnClearConsole.addEventListener("click", clearConsole);
+
+      // ======================================================================
+      // THEME TOGGLE (DARK / LIGHT) (REQUISITO 18)
+      // ======================================================================
+      btnToggleTheme.addEventListener("click", () => {
+        state.theme = state.theme === "dark" ? "light" : "dark";
+        if (state.theme === "light") {
+          document.body.classList.add("theme-light");
+        } else {
+          document.body.classList.remove("theme-light");
+        }
+        localStorage.setItem("html_playground_theme", state.theme);
+        showToast("Tema " + (state.theme === "light" ? "Claro" : "Escuro") + " ativado");
+      });
+
+      // ======================================================================
+      // WORD WRAP, COPY & CLEAR (REQUISITO 2 & 18)
+      // ======================================================================
+      btnToggleWrap.addEventListener("click", () => {
+        state.wordWrap = !state.wordWrap;
+        if (state.wordWrap) {
+          editorTextarea.classList.add("wrap-enabled");
+          btnToggleWrap.classList.add("active");
+          showToast("Quebra de linha ativada");
+        } else {
+          editorTextarea.classList.remove("wrap-enabled");
+          btnToggleWrap.classList.remove("active");
+          showToast("Quebra de linha desativada");
+        }
+      });
+
+      btnCopy.addEventListener("click", () => {
+        navigator.clipboard.writeText(editorTextarea.value).then(() => {
+          showToast("📋 Código copiado para a área de transferência!");
+        }).catch(() => {
+          showToast("Erro ao copiar código");
+        });
+      });
+
+      btnClear.addEventListener("click", () => {
+        if (confirm("Deseja realmente limpar o código do editor atual?")) {
+          editorTextarea.value = "";
+          saveCurrentEditorContentToState();
+          updateStatsAndGutter();
+          runCode(false);
+          showToast("Editor limpo");
+        }
+      });
+
+      // Basic HTML/CSS/JS indentation formatter
+      btnFormat.addEventListener("click", () => {
+        try {
+          const val = editorTextarea.value;
+          // Clean empty trailing spaces and format indentation simply
+          const lines = val.split("\n");
+          let indentLevel = 0;
+          const formatted = lines.map(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return "";
+            if (trimmed.startsWith("</") || trimmed.startsWith("}") || trimmed === "]" || trimmed === ")") {
+              indentLevel = Math.max(0, indentLevel - 1);
+            }
+            const padded = "  ".repeat(indentLevel) + trimmed;
+            if (
+              (trimmed.startsWith("<") && !trimmed.startsWith("</") && !trimmed.endsWith("/>") && !trimmed.includes("</")) ||
+              trimmed.endsWith("{")
+            ) {
+              indentLevel++;
+            }
+            return padded;
+          }).join("\n");
+
+          editorTextarea.value = formatted;
+          saveCurrentEditorContentToState();
+          updateStatsAndGutter();
+          showToast("✨ Código formatado");
+        } catch (e) {
+          showToast("Não foi possível formatar");
+        }
+      });
+
+      // ======================================================================
+      // IN-EDITOR SEARCH (REQUISITO 18)
+      // ======================================================================
+      btnToggleSearch.addEventListener("click", () => {
+        searchBar.classList.toggle("show");
+        if (searchBar.classList.contains("show")) {
+          searchInput.focus();
+        }
+      });
+      btnCloseSearch.addEventListener("click", () => {
+        searchBar.classList.remove("show");
+      });
+
+      let searchMatches = [];
+      let currentMatchIdx = -1;
+
+      function performSearch() {
+        const query = searchInput.value;
+        if (!query) {
+          searchMatches = [];
+          currentMatchIdx = -1;
+          searchCounter.textContent = "0/0";
+          return;
+        }
+
+        const text = editorTextarea.value;
+        const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+        searchMatches = [];
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+          searchMatches.push({ start: match.index, end: match.index + query.length });
+        }
+
+        if (searchMatches.length > 0) {
+          currentMatchIdx = 0;
+          highlightMatch();
+        } else {
+          currentMatchIdx = -1;
+          searchCounter.textContent = "0/0";
+        }
+      }
+
+      function highlightMatch() {
+        if (currentMatchIdx < 0 || currentMatchIdx >= searchMatches.length) return;
+        const target = searchMatches[currentMatchIdx];
+        editorTextarea.focus();
+        editorTextarea.setSelectionRange(target.start, target.end);
+        searchCounter.textContent = (currentMatchIdx + 1) + "/" + searchMatches.length;
+      }
+
+      searchInput.addEventListener("input", performSearch);
+      btnFindNext.addEventListener("click", () => {
+        if (searchMatches.length === 0) return;
+        currentMatchIdx = (currentMatchIdx + 1) % searchMatches.length;
+        highlightMatch();
+      });
+      btnFindPrev.addEventListener("click", () => {
+        if (searchMatches.length === 0) return;
+        currentMatchIdx = (currentMatchIdx - 1 + searchMatches.length) % searchMatches.length;
+        highlightMatch();
+      });
+
+      // ======================================================================
+      // IMPORT & EXPORT (REQUISITOS 13 & 14)
+      // ======================================================================
+      btnImport.addEventListener("click", () => {
+        fileInput.value = "";
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const content = event.target.result;
+          state.mode = "full";
+          state.fullHtml = content;
+          state.currentProjectName = file.name.replace(/\.[^/.]+$/, "");
+          modeTabs.forEach(t => t.classList.remove("active"));
+          tabFullHtml.classList.add("active");
+          loadStateContentToEditor();
+          runCode(false);
+          saveProjectToStorage();
+          showToast("📂 Arquivo carregado: " + file.name);
+        };
+        reader.readAsText(file);
+      });
+
+      btnExport.addEventListener("click", () => {
+        const fullContent = getCombinedHtml();
+        const blob = new Blob([fullContent], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = (state.currentProjectName || "index") + ".html";
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("📥 Projeto exportado como index.html");
+      });
+
+      // ======================================================================
+      // LOCALSTORAGE PERSISTENCE & PROJECTS (REQUISITOS 15 & 16)
+      // ======================================================================
+      function getStoredProjects() {
+        try {
+          const raw = localStorage.getItem("html_playground_projects");
+          return raw ? JSON.parse(raw) : [];
+        } catch(e) {
+          return [];
+        }
+      }
+
+      function saveProjectsList(list) {
+        localStorage.setItem("html_playground_projects", JSON.stringify(list));
+      }
+
+      function saveProjectToStorage() {
+        saveCurrentEditorContentToState();
+        const projects = getStoredProjects();
+        const now = new Date();
+        const timeStr = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+
+        const existingIdx = projects.findIndex(p => p.id === state.currentProjectId);
+        const projectData = {
+          id: state.currentProjectId,
+          name: state.currentProjectName,
+          updatedAt: timeStr,
+          mode: state.mode,
+          fullHtml: state.fullHtml,
+          sepHtml: state.sepHtml,
+          sepCss: state.sepCss,
+          sepJs: state.sepJs
+        };
+
+        if (existingIdx >= 0) {
+          projects[existingIdx] = projectData;
+        } else {
+          projects.unshift(projectData);
+        }
+
+        saveProjectsList(projects);
+        statSaveStatus.textContent = "✓ Salvo automaticamente às " + timeStr;
+      }
+
+      btnSave.addEventListener("click", () => {
+        saveProjectToStorage();
+        showToast("💾 Projeto salvo com sucesso!");
+      });
+
+      btnNewProject.addEventListener("click", () => {
+        if (confirm("Criar um novo projeto? Salve suas alterações se necessário.")) {
+          state.currentProjectId = "proj_" + Date.now();
+          state.currentProjectName = "Novo Projeto";
+          state.mode = "full";
+          state.fullHtml = DEFAULT_STARTER_HTML;
+          state.sepHtml = DEFAULT_SEP_HTML;
+          state.sepCss = DEFAULT_SEP_CSS;
+          state.sepJs = DEFAULT_SEP_JS;
+
+          modeTabs.forEach(t => t.classList.remove("active"));
+          tabFullHtml.classList.add("active");
+          loadStateContentToEditor();
+          runCode(false);
+          saveProjectToStorage();
+          showToast("✨ Novo projeto criado!");
+        }
+      });
+
+      function renderProjectsModal() {
+        const projects = getStoredProjects();
+        modalProjectsList.innerHTML = "";
+        if (projects.length === 0) {
+          modalProjectsList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum projeto salvo no navegador ainda.</div>';
+          return;
+        }
+
+        projects.forEach(p => {
+          const item = document.createElement("div");
+          item.className = "project-item";
+          item.innerHTML = `
+            <div>
+              <div class="project-item-title">📄 ${p.name || "Sem nome"}</div>
+              <div class="project-item-meta">Última alteração às ${p.updatedAt || "--:--"} • Modo: ${p.mode === 'full' ? 'HTML Completo' : 'Arquivos Separados'}</div>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn btn-secondary" style="font-size: 11px; padding: 3px 8px;" data-load="${p.id}">Abrir</button>
+              <button class="btn btn-danger" style="font-size: 11px; padding: 3px 8px;" data-del="${p.id}">Excluir</button>
+            </div>
+          `;
+
+          item.querySelector("[data-load]").addEventListener("click", (e) => {
+            e.stopPropagation();
+            loadProject(p.id);
+            modalProjects.classList.remove("open");
+          });
+
+          item.querySelector("[data-del]").addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (confirm("Excluir o projeto '" + p.name + "'?")) {
+              deleteProject(p.id);
+              renderProjectsModal();
+            }
+          });
+
+          modalProjectsList.appendChild(item);
+        });
+      }
+
+      function loadProject(id) {
+        const projects = getStoredProjects();
+        const p = projects.find(item => item.id === id);
+        if (!p) return;
+
+        state.currentProjectId = p.id;
+        state.currentProjectName = p.name;
+        state.mode = p.mode || "full";
+        state.fullHtml = p.fullHtml || DEFAULT_STARTER_HTML;
+        state.sepHtml = p.sepHtml || DEFAULT_SEP_HTML;
+        state.sepCss = p.sepCss || DEFAULT_SEP_CSS;
+        state.sepJs = p.sepJs || DEFAULT_SEP_JS;
+
+        modeTabs.forEach(t => t.classList.remove("active"));
+        if (state.mode === "full") tabFullHtml.classList.add("active");
+        else if (state.mode === "sep-html") tabSepHtml.classList.add("active");
+        else if (state.mode === "sep-css") tabSepCss.classList.add("active");
+        else if (state.mode === "sep-js") tabSepJs.classList.add("active");
+
+        loadStateContentToEditor();
+        runCode(false);
+        showToast("Projeto '" + p.name + "' carregado");
+      }
+
+      function deleteProject(id) {
+        let projects = getStoredProjects();
+        projects = projects.filter(p => p.id !== id);
+        saveProjectsList(projects);
+      }
+
+      btnOpenProjects.addEventListener("click", () => {
+        renderProjectsModal();
+        modalProjects.classList.add("open");
+      });
+      btnCloseModal.addEventListener("click", () => {
+        modalProjects.classList.remove("open");
+      });
+      modalProjects.addEventListener("click", (e) => {
+        if (e.target === modalProjects) modalProjects.classList.remove("open");
+      });
+
+      // ======================================================================
+      // DRAGGABLE SPLIT RESIZING
+      // ======================================================================
+      let isDragging = false;
+      splitDivider.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        splitDivider.classList.add("dragging");
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = "col-resize";
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const containerRect = workspace.getBoundingClientRect();
+        const newWidth = e.clientX - containerRect.left;
+        const totalWidth = containerRect.width;
+        if (newWidth > 180 && newWidth < totalWidth - 180) {
+          const percent = (newWidth / totalWidth) * 100;
+          paneEditor.style.width = percent + "%";
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+          splitDivider.classList.remove("dragging");
+          document.body.style.userSelect = "";
+          document.body.style.cursor = "";
+        }
+      });
+
+      // ======================================================================
+      // KEYBOARD SHORTCUTS (REQUISITOS 2 & 18)
+      // Ctrl+Enter -> Run
+      // Ctrl+S     -> Save (prevent default browser save)
+      // Ctrl+L     -> Clear editor
+      // Ctrl+F     -> Toggle search
+      // ======================================================================
+      window.addEventListener("keydown", (e) => {
+        const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+        const ctrlKey = isMac ? e.metaKey : e.ctrlKey;
+
+        if (ctrlKey && e.key === "Enter") {
+          e.preventDefault();
+          runCode(false);
+        } else if (ctrlKey && (e.key === "s" || e.key === "S")) {
+          e.preventDefault();
+          saveProjectToStorage();
+          showToast("💾 Salvo no navegador!");
+        } else if (ctrlKey && (e.key === "l" || e.key === "L")) {
+          e.preventDefault();
+          if (confirm("Limpar todo o código do editor?")) {
+            editorTextarea.value = "";
+            saveCurrentEditorContentToState();
+            updateStatsAndGutter();
+            runCode(false);
+          }
+        } else if (ctrlKey && (e.key === "f" || e.key === "F")) {
+          e.preventDefault();
+          searchBar.classList.toggle("show");
+          if (searchBar.classList.contains("show")) {
+            searchInput.focus();
+          }
+        }
+      });
+
+      // ======================================================================
+      // MOBILE NAVIGATION SWITCHER (REQUISITO 1)
+      // ======================================================================
+      mobileTabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          mobileTabButtons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          appContainer.dataset.mobileView = btn.dataset.view;
+        });
+      });
+
+      // ======================================================================
+      // INITIALIZATION
+      // ======================================================================
+      function init() {
+        // Load stored theme
+        const savedTheme = localStorage.getItem("html_playground_theme");
+        if (savedTheme === "light") {
+          state.theme = "light";
+          document.body.classList.add("theme-light");
+        }
+
+        // Check if there is an existing project
+        const projects = getStoredProjects();
+        if (projects.length > 0) {
+          loadProject(projects[0].id);
+        } else {
+          loadStateContentToEditor();
+          runCode(true);
+          saveProjectToStorage();
+        }
+
+        updateStatsAndGutter();
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

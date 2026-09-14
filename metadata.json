@@ -1,0 +1,8 @@
+{
+  "name": "HTML Playground",
+  "description": "Ambiente de desenvolvimento e preview web em tempo real (HTML, CSS e JavaScript) em arquivo único sem dependências externas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
